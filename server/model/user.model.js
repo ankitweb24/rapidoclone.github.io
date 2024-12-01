@@ -28,19 +28,17 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-//create a token
 userSchema.methods.genAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, process.env.JWTSECRET);
+  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
   return token;
 };
 
-//compare Password
 userSchema.methods.comparePassword = async function (password) {
-  return bcrypt.compare(password, this.password);
+  return await bcrypt.compare(password, this.password);
 };
 
 userSchema.statics.hashPassword = async function (password) {
-  return bcrypt.hash(password, 10);
+  return await bcrypt.hash(password, 10);
 };
 
 const userModel = mongoose.model("user", userSchema);
