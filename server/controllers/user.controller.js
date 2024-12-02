@@ -25,7 +25,7 @@ export const userRegister = async (req, res, next) => {
 export const userLogin = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ error: errors.array() });
+    return res.status(401).json({ error: errors.array() });
   }
 
   const { email, password } = req.body;
@@ -33,18 +33,20 @@ export const userLogin = async (req, res, next) => {
   const user = await userModel.findOne({ email }).select("+password");
 
   if (!user) {
-    return res.status(401).json({ message: "invalid email or password" });
+    return res
+      .status(401)
+      .json({ message: "Email Or Password is not matching.." });
   }
 
-  const isMatch = await user.comparePassword(password);
-
-  console.log(isMatch);
+  const isMatch = user.comparePassword(password);
 
   if (!isMatch) {
-    return res.status(401).json({ message: "invalid email or password" });
+    return res
+      .status(401)
+      .json({ message: "Email Or Password is not matching.." });
   }
 
-  const token = user.genrateAuthToken();
+  const token = user.genAuthToken();
 
   res.status(200).json({ token, user });
 };
