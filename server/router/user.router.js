@@ -2,7 +2,14 @@ import { Router } from "express";
 const router = Router();
 import { body } from "express-validator";
 
-import { userRegister, userLogin } from "../controllers/user.controller.js";
+import {
+  userRegister,
+  userLogin,
+  userProfile,
+  userLogout
+} from "../controllers/user.controller.js";
+
+import { userAuth } from "../middleware/user.auth.js";
 
 //userRegister router create
 router.post(
@@ -18,9 +25,17 @@ router.post(
   userRegister
 );
 
-router.post("/login", [
-  body("email").isEmail().withMessage("Invalid Email"),
-  body("password").isLength({ min: 6 }).withMessage("Password To Be Short"),
-], userLogin);
+router.post(
+  "/login",
+  [
+    body("email").isEmail().withMessage("Invalid Email"),
+    body("password").isLength({ min: 6 }).withMessage("Password To Be Short"),
+  ],
+  userLogin
+);
+
+router.get("/profile", userAuth, userProfile);
+
+router.get("/logout", userAuth, userLogout);
 
 export default router;

@@ -2,6 +2,7 @@ import { configDotenv } from "dotenv";
 configDotenv();
 import express from "express";
 import dbConnect from "./db/config.js";
+import cookieParser from "cookie-parser";
 const app = express();
 
 import router from "./router/user.router.js";
@@ -12,6 +13,8 @@ const port = process.env.PORT;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser());
 
 app.use("/users", router);
 
